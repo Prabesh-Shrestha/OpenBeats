@@ -1,0 +1,2 @@
+pygame==2.0.1
+youtube-dl==2021.6.6
