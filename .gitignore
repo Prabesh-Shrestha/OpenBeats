@@ -1,4 +1,5 @@
 env/
+mysongs/
 __pycache__
 test.py
 UI.py

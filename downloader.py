@@ -23,5 +23,3 @@ def download(url):
 if __name__ == "__main__":
     link = input("Enter the url of the song\n: ")
     download(link)
-
-# 4
