@@ -15,6 +15,7 @@ musicplaying = False
 playlistSelected = False
 index_of_song = 0
 index_of_fav_song = 0
+listSelected = 'All'
 
 # creates the song lists
 list_of_songs_fullname = os.listdir(MUSICFOLDER + '/')
@@ -59,18 +60,25 @@ songname = Label(musicnameboard,text = str(list_of_songs[index_of_song])[0:45], 
 # songlist = Listbox(listboard, yscrollcommand = sb.set).grid(row = 0, column = 0)  
 # sb.config(command = songlist.yview)  
 
+
+
 sb = Scrollbar(listboard)  
 sb.pack(side = RIGHT, fill = Y)  
 songlist = Listbox(listboard, yscrollcommand = sb.set )  
-songlist.pack( side = LEFT )  
+songlist.pack( side = TOP )  
 sb.config( command = songlist.yview )
 
+def select_song():
+    for i in songlist.curselection():
+        playmusic(songlist.get(i))
+
+Button(listboard, text = "Play", command = select_song).pack(side = BOTTOM)
 # songlist.delete(0, END)
 # for i in list_of_fav_songs:
 #     songlist.insert(END,i)
 
 songlist.delete(0, END)
-for i in list_of_songs:
+for i in list_of_songs_fullname:
     songlist.insert(END,i)
 
 def changesongname(name):
@@ -78,22 +86,15 @@ def changesongname(name):
 
 def addfav():
     playlist.updatefav([list_of_songs_fullname[index_of_song]])
-def playmusic():
-    global index_of_song
-    global list_of_fav_songs_fullname
-    global list_of_fav_songs
-    if playlistSelected:
-        nameofsong = list_of_songs[index_of_song]
-        changesongname(nameofsong)
-        mixer.music.load(MUSICFOLDER + "/"+ list_of_fav_songs_fullname[index_of_fav_song])
-        mixer.music.play(loops=0)
-        discordint.discordpresenceupdate(list_of_fav_songs_fullname[index_of_fav_song])
-    else:
-        nameofsong = list_of_songs_fullname[index_of_song]
-        changesongname(nameofsong)
-        mixer.music.load(MUSICFOLDER + "/"+ list_of_songs_fullname[index_of_song])
-        mixer.music.play(loops=0)
-        discordint.discordpresenceupdate(list_of_songs_fullname[index_of_song])
+
+
+
+def playmusic(nameofmusic):
+
+    changesongname(nameofmusic)
+    mixer.music.load(MUSICFOLDER + "/"+ nameofmusic)
+    mixer.music.play(loops=0)
+    discordint.discordpresenceupdate(nameofmusic)
 
 def volumecontrol(temp):
     try:
@@ -132,18 +133,18 @@ def leftbuttonpressed():
     if playlistSelected:
         try:
             index_of_song -=1
-            playmusic()
+            playmusic(list_of_songs_fullname[index_of_song])
         except:
             index_of_song =0
-            playmusic()
+            playmusic(list_of_songs_fullname[index_of_song])
         pass
     else:
         try:
             index_of_song -=1
-            playmusic()
+            playmusic(list_of_songs_fullname[index_of_song])
         except:
             index_of_song =0
-            playmusic()
+            playmusic(list_of_songs_fullname[index_of_song])
         
 
 def pausemusic():
@@ -159,10 +160,10 @@ def rightbuttonpressed():
     global index_of_song
     try:
         index_of_song +=1
-        playmusic()
+        playmusic(list_of_songs_fullname[index_of_song])
     except:
         index_of_song =0
-        playmusic()
+        playmusic(list_of_songs_fullname[index_of_song])
         
 
 
