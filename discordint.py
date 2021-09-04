@@ -6,8 +6,10 @@ rpc = Presence(client_id)
 rpc.connect()
 rpc
 
+
 def discordpresenceupdate(songname):
-    rpc.update(state = "playing : " + songname, large_image = "pfp", start = time.time())
+    rpc.update(state="playing : " + songname, large_image="pfp", start=time.time())
+
 
 if __name__ == "__main__":
     discordpresenceupdate("testing")
