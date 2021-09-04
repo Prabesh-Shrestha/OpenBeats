@@ -12,13 +12,15 @@ root.title("OpenBeats!")
 # root.geometry("600x100")
 root.config(bg = CONTROLBOARDCOLOR)
 musicplaying = False
-
-
-
-list_of_songs_fullname = os.listdir(MUSICFOLDER + '/')
-list_of_songs = [i[:numberoflettersinmusic] for i in list_of_songs_fullname]
-list_of_fav_songs = [i[:numberoflettersinmusic] for i in playlist.readfav("fav.txt")]
+playlistSelected = False
 index_of_song = 0
+index_of_fav_song = 0
+
+# creates the song lists
+list_of_songs_fullname = os.listdir(MUSICFOLDER + '/')
+list_of_fav_songs_fullname = playlist.readfav("fav.txt")
+list_of_songs = [i[:numberoflettersinmusic] for i in list_of_songs_fullname]
+list_of_fav_songs = [i[:numberoflettersinmusic] for i in list_of_fav_songs_fullname]
 
 
 
@@ -51,19 +53,47 @@ controlboard.grid(row = 2, column =0)
 
 songname = Label(musicnameboard,text = str(list_of_songs[index_of_song])[0:45], bg = BACKGROUNDCOLOR)
 
+# sb = Scrollbar(root)
+# sb.grid(row = 0, column = 1)
+  
+# songlist = Listbox(listboard, yscrollcommand = sb.set).grid(row = 0, column = 0)  
+# sb.config(command = songlist.yview)  
+
+sb = Scrollbar(listboard)  
+sb.pack(side = RIGHT, fill = Y)  
+songlist = Listbox(listboard, yscrollcommand = sb.set )  
+songlist.pack( side = LEFT )  
+sb.config( command = songlist.yview )
+
+# songlist.delete(0, END)
+# for i in list_of_fav_songs:
+#     songlist.insert(END,i)
+
+songlist.delete(0, END)
+for i in list_of_songs:
+    songlist.insert(END,i)
+
 def changesongname(name):
     songname.config(text = name[0:45])
 
 def addfav():
     playlist.updatefav([list_of_songs_fullname[index_of_song]])
-    # print(list_of_songs_fullname[index_of_song])
 def playmusic():
     global index_of_song
-    nameofsong = list_of_songs_fullname[index_of_song]
-    changesongname(nameofsong)
-    mixer.music.load(MUSICFOLDER + "/"+ list_of_songs_fullname[index_of_song])
-    mixer.music.play(loops=0)
-    discordint.discordpresenceupdate(list_of_songs_fullname[index_of_song])
+    global list_of_fav_songs_fullname
+    global list_of_fav_songs
+    if playlistSelected:
+        nameofsong = list_of_songs[index_of_song]
+        changesongname(nameofsong)
+        mixer.music.load(MUSICFOLDER + "/"+ list_of_fav_songs_fullname[index_of_fav_song])
+        mixer.music.play(loops=0)
+        discordint.discordpresenceupdate(list_of_fav_songs_fullname[index_of_fav_song])
+    else:
+        nameofsong = list_of_songs_fullname[index_of_song]
+        changesongname(nameofsong)
+        mixer.music.load(MUSICFOLDER + "/"+ list_of_songs_fullname[index_of_song])
+        mixer.music.play(loops=0)
+        discordint.discordpresenceupdate(list_of_songs_fullname[index_of_song])
 
 def volumecontrol(temp):
     try:
@@ -78,47 +108,60 @@ def refreshmusiclist():
     global list_of_songs
     global list_of_songs_fullname
 
-    list_of_fav_songs = os.listdir(MUSICFOLDER + '/')
-    list_of_fav_songs = [i[:numberoflettersinmusic] for i in list_of_fav_songs]
+    list_of_fav_songs_fullname = os.listdir(MUSICFOLDER + '/')
+    list_of_fav_songs = [i[:numberoflettersinmusic] for i in list_of_fav_songs_fullname]
     
     list_of_songs_fullname = os.listdir(MUSICFOLDER + '/')
     list_of_songs = [i[:numberoflettersinmusic] for i in list_of_songs_fullname]
-    listlabel = Label(listboard, text = "\n".join(list_of_songs), bg = LISTBOARDCOLOR).grid(row = 0, column = 0)
-    print("List refreshed")
-    
+    if playlistSelected:
+        songlist.delete(0, END)
+        for i in list_of_fav_songs:
+            songlist.insert(END,i)
+        # songlist.insert(END,"\n".join(list_of_fav_songs))
+
+    else:
+        songlist.delete(0, END)
+        for i in list_of_songs:
+            songlist.insert(END,i)
+
+        # listlabel = Label(listboard, text = "\n".join(list_of_songs), bg = LISTBOARDCOLOR).grid(row = 0, column = 0)
+
 
 def leftbuttonpressed():
     global index_of_song
-    try:
-        index_of_song -=1
-        print(index_of_song)
-        playmusic()
-    except:
-        index_of_song =0
-        print(index_of_song)
-        playmusic()
+    if playlistSelected:
+        try:
+            index_of_song -=1
+            playmusic()
+        except:
+            index_of_song =0
+            playmusic()
+        pass
+    else:
+        try:
+            index_of_song -=1
+            playmusic()
+        except:
+            index_of_song =0
+            playmusic()
         
 
 def pausemusic():
     global musicplaying
     if not(musicplaying):
-        print("playing music")
         musicplaying = True
         mixer.music.unpause()
     else:
         mixer.music.pause()
         musicplaying = False
-        print("Music paused")
 
 def rightbuttonpressed():
     global index_of_song
     try:
         index_of_song +=1
-        print(index_of_song)
         playmusic()
     except:
         index_of_song =0
-        print(index_of_song)
         playmusic()
         
 
@@ -127,24 +170,19 @@ def rightbuttonpressed():
 def showallinlist():
     global listlabel
     try:
-        favlistlabel.destroy()
-        print("favlist distroyed")
+        songlist.delete(0, END)
+        for i in list_of_songs:
+            songlist.insert(END,i)
     except:
         pass
-    listlabel = Label(listboard, text = "\n".join(list_of_songs), bg = LISTBOARDCOLOR).grid(row = 0, column = 0)
-
 def showfavinlist():
     global favlistlabel
     try:
-        print("listlabel distroyed")
-        listlabel.destroy()
+        songlist.delete(0, END)
+        for i in list_of_fav_songs:
+            songlist.insert(END,i)
     except:
         pass
-    favlistlabel = Label(listboard, text = "\n".join(list_of_fav_songs), bg = LISTBOARDCOLOR).grid(row = 0, column = 0)
-
-
-
-
 
 search_entry = Entry(searchbarboard,width = 31)
 
