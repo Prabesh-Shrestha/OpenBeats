@@ -20,12 +20,6 @@ def createfav(fav_file_name, list_of_song):
 
 
 def updatefav(listofsong):
-    # oldsongs = readfav("fav.txt")
-    # # newsongs = list(set(listofsong) - set(oldsongs))
-    # # fulllist = oldsongs + newsongs
-
-    # fulllist= list(set(oldsongs) | set(listofsong))
-    # createfav("fav.txt",fulllist)
     with open("playlist/fav.txt", "a") as file:
         file.write("\n".join(listofsong))
         file.write("\n")
