@@ -1,6 +1,6 @@
 env/
 mysongs/
-songs/*
+songs/*.wav
 __pycache__
 test.py
 UI.py
