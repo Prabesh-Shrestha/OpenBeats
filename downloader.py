@@ -3,7 +3,7 @@ import youtube_dl
 
 ydl_opts = {
     "format": "bestaudio/best",
-    "outtmpl": "songs/%(title)s.%(ext)s",
+    "outtmpl": "openbeats/songs/%(title)s.%(ext)s",
     "postprocessors": [
         {
             "key": "FFmpegExtractAudio",

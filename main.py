@@ -32,8 +32,8 @@ except:
 
 
 
-print(list_of_songs_fullname)
-print(list_of_songs_fullname[index_of_song])
+# print(list_of_songs_fullname)
+# print(list_of_songs_fullname[index_of_song])
 
 
 mixer.music.load(MUSICFOLDER + "/"+ list_of_songs_fullname[index_of_song])
