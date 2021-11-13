@@ -18,10 +18,17 @@ index_of_fav_song = 0
 listSelected = 'All'
 
 # creates the song lists
-list_of_songs_fullname = os.listdir(MUSICFOLDER + '/')
-list_of_fav_songs_fullname = playlist.readfav("fav.txt")
-list_of_songs = [i[:numberoflettersinmusic] for i in list_of_songs_fullname]
-list_of_fav_songs = [i[:numberoflettersinmusic] for i in list_of_fav_songs_fullname]
+try:
+    list_of_songs_fullname = os.listdir(MUSICFOLDER + '/')
+    list_of_fav_songs_fullname = playlist.readfav("fav.txt")
+    list_of_songs = [i[:numberoflettersinmusic] for i in list_of_songs_fullname]
+    list_of_fav_songs = [i[:numberoflettersinmusic] for i in list_of_fav_songs_fullname]
+except:
+    list_of_songs_fullname = [] 
+    list_of_fav_songs_fullname = playlist.readfav("fav.txt")
+    list_of_songs = [i[:numberoflettersinmusic] for i in list_of_songs_fullname]
+    list_of_fav_songs = [i[:numberoflettersinmusic] for i in list_of_fav_songs_fullname]
+
 
 
 
