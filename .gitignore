@@ -5,3 +5,4 @@ __pycache__
 test.py
 UI.py
 keys.py
+.tabnine.model
